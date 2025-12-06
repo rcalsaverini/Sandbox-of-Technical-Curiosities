@@ -1,0 +1,58 @@
+\pagestyle{empty}
+
+% =========================================
+% 1. HALF TITLE PAGE
+% =========================================
+\vspace*{\fill}
+\begin{center}
+    {\scshape\Large\color{techblue!80} \booktitle \par}
+\end{center}
+\vspace*{\fill}
+\cleardoublepage
+
+% =========================================
+% 2. FULL TITLE PAGE
+% =========================================
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    % --- Main Title ---
+    {\fontsize{30}{34}\selectfont\scshape\color{techblue} \booktitle \par}
+    
+    \vspace{0.5em}
+    
+    % --- Decorative Rule ---
+    \begin{tikzpicture}
+        \draw[techblue, thick] (0,0) 
+            -- (1,0) node[fill=white] {\selectfont\scshape\color{accentred}$\diamond$}
+            -- (3,0) node[fill=white] {\selectfont\scshape\color{accentred}$\diamond$}
+            -- (4,0) node[fill=white] {\selectfont\scshape\color{accentred}$\diamond$}
+            -- (6,0) node[fill=white] {\selectfont\scshape\color{accentred}$\diamond$}
+            -- (7,0);
+    \end{tikzpicture}
+    
+    \vspace{1em}
+    
+    % --- Subtitle ---
+    {\Large\itshape \subtitle \par}
+    
+    \vspace{4cm}
+    
+    % --- Author ---
+    {\itshape\large by\par}
+    \vspace{0.5em}
+    {\Large\scshape\bfseries \authorname \par}
+   
+    \vfill
+    
+    % --- Publisher ---
+    \nonsenseLogo \par % <--- Used the new command here
+    
+    \vspace{0.5em}
+    
+    {\large\scshape \publisher \par}
+    {\small \editionyear \par}
+
+\end{titlepage}
+\cleardoublepage

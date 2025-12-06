@@ -1,0 +1,32 @@
+\cleardoublepage
+\thispagestyle{empty} % Clean start, no headers
+
+% =========================================
+% 1. STYLE FIX FOR UNNUMBERED CHAPTERS
+% =========================================
+% This defines how "TOC", "Preface", and "Bibliography" look.
+% We remove the "Big Gray Number" and center the title with an ornament.
+\titleformat{name=\chapter,numberless}[display]
+  {\normalfont\huge\bfseries\color{techblue}\centering} % Centered Blue Text
+  {} % No number label
+  {0pt} % No spacing for the missing number
+  {\Huge\itshape #1} % The Title Text
+  [\vspace{0.5em}]
+   % The Diamond Ornament (Matches Title Page)
+
+% =========================================
+% 2. TOC SPECIFIC TWEAKS
+% =========================================
+% Make the leader dots (......) Blue
+\renewcommand{\cftchapleader}{\color{techblue!50}\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecleader}{\color{techblue!30}\cftdotfill{\cftdotsep}}
+
+% =========================================
+% 3. GENERATE TABLE OF CONTENTS
+% =========================================
+{
+  \hypersetup{linkcolor=black} % Keep TOC links black for readability (optional)
+  \tableofcontents
+}
+
+\cleardoublepage

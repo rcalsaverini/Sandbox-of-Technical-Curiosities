@@ -1,0 +1,20 @@
+\chapter{Differential Equations}
+
+\section{The 1D Schrödinger Equation as a non-linear forced system}
+\lettrine{T}{he 1D Schrödinger Equation}, can be written, by normalizing variables and rearranging terms, roughly as:
+\begin{equation}
+    \label{eq:schrodinger}
+    \dv[2]{\psi}{x} + u(x) \psi = 0
+\end{equation}
+
+We could make the ansatz $\psi(x) = \exp{h(x)}$ and note that:
+\begin{align*}
+    \dv{e^{h(x)}}{x} &= \dv{h}{x} \psi(x) \\
+    \dv[2]{e^{h(x)}}{x} &= \dv{x}\left(\dv{h}{x}\psi(x)\right) \\
+                        &= \dv[2]{h}{x}\psi(x) + \dv{h}{x}\dv{\psi(x)}{x} \\
+                        &= \left[\dv[2]{h}{x} + \left(\dv{h}{x}\right)^2\right]\psi(x)
+\end{align*}
+Putting this together with \eqref{eq:schrodinger} gives:
+\begin{equation*}
+    \dv[2]{h}{x} + \left(\dv{h}{x}\right)^2 = -u(x)
+\end{equation*}

@@ -1,0 +1,184 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{setup}
+
+% =========================================
+% 1. TYPOGRAPHY & ENCODING
+% =========================================
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc} % Explicitly stating utf8 is good practice
+\RequirePackage{microtype}      % Micro-adjustments for perfect justification
+
+% --- Fonts ---
+% Garamond for body text (Classic, "Notebook" feel)
+\RequirePackage{ebgaramond}
+% Math font that matches Garamond
+\RequirePackage[cmintegrals,cmbraces]{newtxmath} 
+
+% =========================================
+% 2. PAGE LAYOUT (A5 Format)
+% =========================================
+\RequirePackage[
+    a5paper, 
+    margin=0.6in, 
+    bindingoffset=0.2in, 
+    heightrounded,
+    headheight=15pt
+]{geometry}
+
+% =========================================
+% 3. COLORS
+% =========================================
+\RequirePackage{xcolor}
+% Define a palette for the book
+\definecolor{techblue}{RGB}{0, 50, 90}   % Deep technical blue for headers
+\definecolor{notegray}{RGB}{245, 245, 245} % Light gray for box backgrounds
+\definecolor{accentred}{RGB}{150, 0, 0}  % For emphasis/alert
+
+% =========================================
+% 4. MATH & SCIENCE PACKAGES
+% =========================================
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{mathtools} % Fixes/extends amsmath
+
+% --- Physics & Derivatives ---
+% 'physics' provides convenient bras, kets, matrices, and simplified \dv
+\RequirePackage{physics} 
+% 'derivative' is better for specific partial derivative notation control
+\RequirePackage{derivative}
+% Fix compatibility: Sort partials by sign, symbol, abs value
+\derivset{\pdv}[sort-method={sign,symbol,abs}]
+
+% =========================================
+% 5. GRAPHICS & FIGURES
+% =========================================
+\RequirePackage{graphicx}
+\RequirePackage{float}
+\RequirePackage{tikz}
+\usetikzlibrary{trees, shapes.geometric, positioning, calc, arrows.meta, shadows}
+
+% =========================================
+% 6. NAVIGATION (Hyperlinks)
+% =========================================
+% Must be loaded before formatting packages that modify headers usually
+\RequirePackage[
+    colorlinks=true,
+    linkcolor=techblue,
+    citecolor=techblue,
+    urlcolor=accentred,
+    pdfborder={0 0 0}
+]{hyperref}
+
+% =========================================
+% 7. HEADER & FOOTER DESIGN
+% =========================================
+\RequirePackage{fancyhdr}
+\RequirePackage[defaultlines=4,all]{nowidow} % Prevent orphans/widows
+
+\pagestyle{fancy}
+\fancyhf{} % Clear defaults
+\renewcommand{\headrulewidth}{0.5pt}
+% Text in header is small, italic, and techblue
+\fancyhead[CE]{\itshape\small\color{techblue}\authorname}
+\fancyhead[CO]{\itshape\small\color{techblue}\booktitle}
+\fancyfoot[C]{\small\thepage}
+
+% =========================================
+% 8. CHAPTER & SECTION STYLING (The Aesthetic Upgrade)
+% =========================================
+\RequirePackage[explicit]{titlesec}
+
+% --- Chapter Title Style ---
+% A large number on the right, rule line, and title below
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{techblue}} % Format applied to title
+  {\filleft\fontsize{60}{70}\selectfont\color{gray!25}\thechapter} % The Chapter Number
+  {-30pt} % Spacing (Move title up to overlap the big gray number slightly)
+  {\filleft\Huge\itshape #1} % The Title Text
+  [\vspace{1ex}\titlerule] % Horizontal line after title
+
+% --- Section Title Style ---
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{techblue}}
+  {\thesection}{1em}{#1}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{black}}
+  {\thesubsection}{1em}{#1}
+
+% =========================================
+% 9. THEOREM & DEFINITION BOXES
+% =========================================
+% Replaces standard \newtheorem with shaded boxes
+\RequirePackage[most]{tcolorbox}
+
+% Define a nice box style
+\tcbset{
+    techbox/.style={
+        enhanced,
+        colback=notegray,
+        colframe=techblue,
+        boxrule=0.5pt,
+        leftrule=3pt, % Thicker left border
+        arc=2pt,
+        fonttitle=\bfseries\small,
+        coltitle=white,
+        attach boxed title to top left={yshift=-10pt, xshift=10pt},
+        boxed title style={colback=techblue, frame hidden}
+    }
+}
+
+% Create environments
+\newtcbtheorem[number within=chapter]{theorem}{Theorem}{techbox}{th}
+\newtcbtheorem[number within=chapter]{definition}{Definition}{
+    techbox, 
+    colframe=gray!80!black, 
+    boxed title style={colback=gray!80!black}
+}{def}
+
+% =========================================
+% 10. TABLE OF CONTENTS & DROPCAPS
+% =========================================
+\RequirePackage{lettrine}
+\RequirePackage[titles]{tocloft}
+
+% Configure Lettrine (Drop Caps)
+\setcounter{DefaultLines}{2}              % Drop 2 lines deep
+\renewcommand{\DefaultLoversize}{0.1}     % Vertical height boost (0.1 is subtle)
+\renewcommand{\LettrineFontHook}{\color{techblue}} % The Big Letter Color
+\renewcommand{\LettrineTextFont}{\scshape\color{techblue}} % "HIS BOOK" color
+\setlength{\DefaultFindent}{0.5em}        % Gap between Letter and text
+\setlength{\DefaultNindent}{0em}          % Indent of the second line
+
+% =========================================
+% 11. GENERAL SETTINGS
+% =========================================
+
+% CC Icons
+\RequirePackage{ccicons} % Adds vector icons for Creative Commons
+
+% Paragraph formatting
+\renewcommand{\baselinestretch}{1.15} 
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt} % Modern style: space between paragraphs, no indent
+
+% Helper command for spacing in formulas
+\newcommand{\hsp}{\kern 1pt}
+
+% --- Custom Logos ---
+% Usage: \nonsenseLogo (defaults to blue) or \nonsenseLogo[white]
+\newcommand{\nonsenseLogo}[1][techblue]{%
+    \begin{tikzpicture}[scale=0.5] % Removed baseline adjustment
+        % The Geometry
+        \draw[thick, #1] (0,0) circle (1.25cm);
+        \draw[thin, #1]  (0,0) circle (1cm);
+        
+        % The Text
+        % 1. We force the node to be centered exactly at 0,0
+        % 2. We explicitly set the font size to \large so it doesn't shrink/grow unpredictably
+        % 3. We use \mkern to tighten the gap between N and P
+        \node[#1, anchor=center, inner sep=0pt] at (0,0) {%
+            \large\bfseries $\mathcal{N}\mkern-3mu\mathcal{P}$%
+        }; 
+    \end{tikzpicture}%
+}

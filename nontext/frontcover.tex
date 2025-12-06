@@ -1,0 +1,70 @@
+\cleardoublepage
+\newgeometry{margin=0pt}
+\thispagestyle{empty}
+
+% --- Background Color ---
+\pagecolor{techblue}
+
+\begin{tikzpicture}[remember picture, overlay]
+    % 1. Define the exact center of your mathematical art
+    % Adjusted to -2.0 to give the logo slightly more breathing room at the bottom
+    \coordinate (artOrigin) at ($(current page.center) + (0, -2.0)$);
+
+    % 2. Art Scope
+    \begin{scope}[shift={(artOrigin)}]
+        
+        % --- THE GRID ---
+        % Drawn relative to artOrigin so it centers perfectly on the math
+        \draw[step=1cm, white, opacity=0.15, very thin] (-10,-15) grid (10,15);
+
+        % --- THE GRAPHS ---
+        \begin{scope}[scale=1.5]
+             % Base Gaussian
+            \draw[white, opacity=0.75, thick, domain=-5:5, samples=100, smooth] 
+                plot (\x, {exp(-0.5*\x*\x)});
+            % Excited states
+            \draw[white, opacity=0.75, thick, domain=-5:5, samples=100, smooth] 
+                plot (\x, {\x*exp(-0.5*\x*\x)});
+            \draw[white, opacity=0.75, thick, domain=-5:5, samples=100, smooth] 
+                plot (\x, {(\x*(\x - 1))*exp(-0.5*\x*\x)});
+            \draw[white, opacity=0.75, thick, domain=-5:5, samples=100, smooth] 
+                plot (\x, {(\x*(\x + 1))*exp(-0.5*\x*\x)});
+            % Inverted variations
+            \draw[white, opacity=0.75, thick, domain=-5:5, samples=100, smooth] 
+                plot (\x, {(\x*(-\x - 1))*exp(-0.5*\x*\x)});
+            \draw[white, opacity=0.75, thick, domain=-5:5, samples=100, smooth] 
+                plot (\x, {(\x*(-\x + 1))*exp(-0.5*\x*\x)});
+        \end{scope}
+    \end{scope}
+
+    % 3. Title Block
+    \node[
+        anchor=north, 
+        text width=12cm, 
+        align=center, 
+        fill=techblue, 
+        fill opacity=0.7, 
+        text opacity=1, 
+        inner sep=1em, 
+        rounded corners
+    ] at ($(current page.north) - (0, 5)$) {
+        \fontsize{40}{45}\selectfont\scshape\bfseries\color{white} \booktitle \\[0.5em]
+        \fontsize{18}{22}\selectfont\itshape\color{white!90} \subtitle
+    };
+
+    % 4. Author 
+    \node[anchor=south] at ($(current page.south) + (0, 3)$) {
+        \fontsize{20}{24}\selectfont\scshape\color{white} \authorname
+    };
+    
+    % 5. Logo 
+    % CRITICAL FIX: Changed anchor=south to anchor=center.
+    % This aligns the mathematical center of the logo to the coordinate.
+    % Also added inner sep=0pt to prevent the node box from adding invisible padding.
+    \node[anchor=center, inner sep=0pt] at ($(current page.south) + (0, 2.0)$) {
+        \nonsenseLogo[white]
+    };
+\end{tikzpicture}
+
+\restoregeometry
+\pagecolor{white}

@@ -1,0 +1,69 @@
+\documentclass[10pt, openany]{book} 
+% openany: allows chapters to start on left pages (saves space in small books)
+
+% =========================================
+% 1. METADATA DEFINITIONS
+% =========================================
+\newcommand{\authorname}{Rafael S. Calsaverini}
+\newcommand{\booktitle}{Mathematical Scrapyard}
+\newcommand{\subtitle}{Where I do my weird math}
+\newcommand{\publisher}{Nonsense Publishers}
+\newcommand{\editionyear}{2025}
+\newcommand{\isbn}{000-0-00-000000-0}
+
+% --- Back Cover Content ---
+% The "Blurb" (Use \\ for line breaks)
+\newcommand{\bookblurb}{``Exact analytical solutions are the exception. \\ This book is about the beautiful, messy rules.''}
+
+% The "Warning" Text
+\newcommand{\bookwarning}{Contains gratuitous use of the Faà di Bruno formula, unrepentant communist ideology, and derivatives of order $n$.}
+
+% =========================================
+% 2. LOAD STYLES
+% =========================================
+\usepackage{setup}
+
+% =========================================
+% 3. PDF METADATA CONFIGURATION
+% =========================================
+% This populates the "Properties" of the PDF file with correct info.
+\hypersetup{
+    pdftitle={\booktitle},
+    pdfauthor={\authorname},
+    pdfsubject={\subtitle},
+    pdfkeywords={Mathematics, Physics, Perturbation Theory, Curiosities}
+}
+
+% Standard Title/Author for internal LaTeX use
+\title{\booktitle}
+\author{\authorname}
+% =========================================
+% 4. DOCUMENT BODY
+% =========================================
+\begin{document}
+
+% --- Front Matter (Roman numerals, no chapter numbers) ---
+\frontmatter
+
+\input{nontext/frontcover}
+\input{nontext/titlepage}
+\input{nontext/copyrightpage}
+\input{nontext/tocpage}
+\input{nontext/preface}
+
+% --- Main Matter (Arabic numerals, numbered chapters) ---
+\mainmatter
+
+% Ensure the fancy headers (defined in setup.sty) are active
+\pagestyle{fancy}
+
+\input{content/chapter1}
+\input{content/chapter2}
+\input{content/chapter3}
+
+% --- Back Matter (Appendices, Bibliography) ---
+\backmatter
+% \input{content/appendix}
+\input{nontext/colophon}
+\input{nontext/backcover}
+\end{document}

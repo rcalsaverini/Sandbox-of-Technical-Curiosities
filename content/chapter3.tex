@@ -1,0 +1,156 @@
+\chapter{Perturbation Theory}
+\lettrine{O}{ften} in Physics, exact analytical solutions to complex equations are the exception rather than the rule. Real-world systems rarely fit perfectly into the idealized models that we can solve with simple closed-form expressions. To tackle this, we focus on what happens to a system when ``small perturbations'' are made around a known standard behavior.
+
+These perturbations are usually controlled by a coupling parameter, denoted here as $u$. The philosophy is to treat the difficult problem not as an isolated challenge, but as a continuous deformation of an easier problem. When $u=0$, the system exists in an "unperturbed" state (such as a harmonic oscillator or a free particle) for which the solution $x_0$ is known exactly. As we slowly "turn on" the parameter $u$ (representing a more complex physical situation, like friction, non-linear interactions, coupling to external fields, etc), the solution $x(u)$ moves away from $x_0$.
+
+The core assumption of perturbation theory is that this deviation is smooth. Rather than attempting to find the full function $x(u)$ all at once, we construct it distinct layer by layer: a first-order correction linear in $u$, a second-order correction quadratic in $u$, and so on. This approach powerfully transforms a potentially intractable non-linear problem into an infinite hierarchy of solvable linear problems.
+
+\section{Perturbation Theory for Algebraic Equations}
+\lettrine{C}{onsider} an implicit algebraic equation of the form $F(x, u) = 0$. Here, $x$ represents the unknown state variable, and $u$ is a scalar control parameter. Our goal is to find a solution $x(u)$ that satisfies:
+\begin{equation}
+    \label{eq:algequation}
+    F(x(u), u) = 0    
+\end{equation}
+We assume that we already know the solution at $u=0$, denoted as $x_0$ (where $F(x_0, 0) = 0$), and that the function is smooth.
+
+\subsection{Power Series Expansion}
+If the parameter $u$ is sufficiently small, we can approximate the solution $x(u)$ using a Taylor series expanded around $u=0$:
+\begin{equation}
+    \label{eq:x_power_series}
+    x(u) = x_0 + x_1 u + x_2 \frac{u^2}{2!} + \ldots = \sum_{k=0}^{\infty} \frac{x_k}{k!} u^k
+\end{equation}
+Here, the coefficients $x_k$ represents the $k$-th derivative of the trajectory, $x_k = \frac{d^k x}{d u^k}\big|_{u=0}$. Our objective is to determine these unknown coefficients $x_k$ sequentially.
+
+Substituting \eqref{eq:x_power_series} into the governing equation \eqref{eq:algequation} results in a composite function of $u$. We can expand this composite function into its own power series:
+\begin{equation}
+    \label{eq:f_power_series}
+    F(x(u), u) = \sum_{k=0}^{\infty} \frac{F_k}{k!} u^k
+\end{equation}
+where $F_k$ represents the $k$-th total derivative of the function with respect to $u$, evaluated at $u=0$:
+\[
+    F_k = \eval{\dv[k]{u} F(x(u), u)}_{u=0}
+\]
+Since \eqref{eq:algequation} states that $F(x(u), u)$ must be zero for \textit{all} $u$, the coefficient of every power $u^k$ in \eqref{eq:f_power_series} must vanish individually. This gives us an infinite system of equations:
+\begin{equation}
+    \label{eq:formal_f_equations}
+    F_k = 0 \quad \text{for all } k \ge 0
+\end{equation}
+
+\subsection{Derivatives via Faà di Bruno's Formula}
+To solve \eqref{eq:formal_f_equations}, we need an explicit formula for the coefficients $F_k$ in terms of our unknowns $x_k$. Calculating high-order derivatives of the composite function $F(x(u), u)$ requires the General Chain Rule.
+
+Using the \textbf{Bivariate Faà di Bruno's formula}, we can expand the total derivative. The formula accounts for the direct dependence on $u$ and the indirect dependence through $x(u)$:
+\begin{multline}
+    \label{eq:faa_di_bruno_dependent}
+    \dv[k]{u} F(x(u), u) = \\
+        \sum_{j=0}^k \binom{k}{j} 
+            \sum_{\pi \in \Pi_{k-j}} \underbrace{\eval{\pdv[j,|\pi|]{F(x, u)}{u,x}}_{x=x(u)}}_{\text{Partial derivs of F}} \cdot \underbrace{\prod_{B \in \pi} \dv[|B|]{x}{u}}_{\text{Derivs of } x(u)}
+\end{multline}
+Evaluating this at $u=0$, we can express $F_k$ using \textbf{Bell polynomials} ($B_{n,k}$), which compactly handle the combinatorial partitions $\pi$.
+
+Let us define the partial derivative terms as $F_{i,j} = \partial_x^i \partial_u^j F|_{u=0}$. The expansion becomes:
+\begin{equation}
+    \label{eq:F_k_expansion}
+    F_k = \sum_{j=0}^k \binom{k}{j} \sum_{i=0}^{k-j} F_{i,j} \cdot B_{k-j,i}(x_1, x_2, \ldots, x_{k-j-i+1})
+\end{equation}
+In this sum:
+\begin{itemize}
+    \item $j$ counts the derivatives taken directly with respect to $u$.
+    \item $i$ counts the derivatives taken with respect to $x$.
+    \item $B_{n,k}$ are the partial Bell polynomials, depending on the unknowns $x_1, \ldots, x_{n-k+1}$.
+\end{itemize}
+
+\subsection{Recursive Solution for $x_k$}
+To find the unknown $x_k$, we inspect \eqref{eq:F_k_expansion} for the term containing the highest order unknown. The term $x_k$ only appears when we take exactly one derivative with respect to $x$ (so $i=1$) and zero derivatives directly on $u$ (so $j=0$).
+
+Isolating this specific term ($j=0, i=1$):
+\[
+    \text{Term}_{0,1} = \binom{k}{0} F_{1,0} \cdot B_{k,1}(x_1, \dots, x_k) = F_{x}(x_0, 0) \cdot x_k
+\]
+We can now separate $x_k$ from all other lower-order terms. The condition $F_k=0$ becomes:
+\begin{equation}
+    F_{x}(x_0, 0) x_{k} + \mathcal{R}_k(x_0, \dots, x_{k-1}) = 0
+\end{equation}
+where $\mathcal{R}_k$ contains the remaining sums. Assuming the Jacobian $F_x(x_0, 0)$ is non-singular (invertible), we arrive at the recursive solution:
+
+\begin{equation}
+    \label{eq:formal_x_solution}
+    \boxed{
+    x_k = -\frac{1}{F_{x}(x_0, 0)} \sum_{\substack{j\in[0, k]\\i\in[0,k-j]\\(i,j)\ne(1,0)}} \binom{k}{j} F_{i,j} \cdot B_{k-j,i}(x_1, \ldots, x_{k-j-i+1})
+    }
+\end{equation}
+This formula allows us to calculate any order $x_k$ purely from the known partial derivatives of $F$ and the previously calculated coefficients $x_1, \dots, x_{k-1}$.
+
+
+
+
+\section{Perturbation Theory for Differential Equations}
+
+\lettrine{N}{ow}, we extend this formalism to dynamic systems governed by implicit ordinary differential equations (ODEs). Consider a system where the time evolution of the state $x(t)$ is coupled to a parameter $u$:
+\begin{equation}
+    \label{eq:diff_equation}
+    F(\dot{x}(t; u), x(t; u), u) = 0
+\end{equation}
+where $\dot{x} \equiv \frac{dx}{dt}$. We assume the initial condition $x(0; u)$ is prescribed.
+
+\subsection{Time-Dependent Power Series}
+We posit that the solution trajectory $x(t; u)$ is smooth with respect to $u$. Thus, it can be expanded in a Taylor series around $u=0$, where the coefficients are now time-dependent functions:
+\begin{equation}
+    \label{eq:ode_series}
+    x(t; u) = \sum_{k=0}^{\infty} \frac{x_k(t)}{k!} u^k
+\end{equation}
+Assuming $x(t; u)$ is sufficiently smooth, the time derivative and the parameter derivative commute ($\partial_t \partial_u = \partial_u \partial_t$). Therefore, the expansion for the velocity is simply the time derivative of the series:
+\begin{equation}
+    \dot{x}(t; u) = \sum_{k=0}^{\infty} \frac{\dot{x}_k(t)}{k!} u^k
+\end{equation}
+Just as in the algebraic case, substituting these series into \eqref{eq:diff_equation} and expanding $F$ in powers of $u$ requires that the coefficient of every power $u^k$ vanishes. This yields the fundamental recurrence relation:
+\begin{equation}
+    \label{eq:ode_recurrence}
+    \eval{\dv[k]{u} F(\dot{x}(t; u), x(t; u), u)}_{u=0} = 0 \quad \text{for all } k \ge 0
+\end{equation}
+
+\subsection{Multivariate Expansion}
+To evaluate the $k$-th total derivative in \eqref{eq:ode_recurrence}, we treat $F$ as a composite function of three variables: $v_1 = \dot{x}$, $v_2 = x$, and $v_3 = u$. Using the generalization of Faà di Bruno's formula for the chain rule, we seek the terms linear in the highest-order unknowns $x_k(t)$ and $\dot{x}_k(t)$.
+
+Let us define the mixed partial derivatives of $F$ evaluated on the unperturbed trajectory (where $u=0$, $x=x_0$, $\dot{x}=\dot{x}_0$) as:
+\[
+    F_{a,b,j}(t) = \eval{\pdv[a]{F}{\dot{x}} \pdv[b]{F}{x} \pdv[j]{F}{u}}_{u=0}
+\]
+The total $k$-th derivative expands into a sum of terms involving products of partial derivatives of $F$ and derivatives of the inputs. The term containing $x_k$ and $\dot{x}_k$ corresponds to the case where the chain rule acts linearly on the arguments. This separates the equation into a **linear operator** and a **source term**:
+
+\begin{equation}
+    \underbrace{F_{1,0,0}(t) \cdot \dot{x}_k(t) + F_{0,1,0}(t) \cdot x_k(t)}_{\text{Linear Homogeneous Part}} + \underbrace{\mathcal{S}_k(t)}_{\text{Inhomogeneous Source}} = 0
+\end{equation}
+
+Here:
+\begin{itemize}
+    \item $F_{1,0,0}(t) = \pdv{F}{\dot{x}}$ is the Jacobian with respect to velocity.
+    \item $F_{0,1,0}(t) = \pdv{F}{x}$ is the Jacobian with respect to position.
+    \item $\mathcal{S}_k(t)$ contains all terms involving $x_0, \dots, x_{k-1}$ and $\dot{x}_0, \dots, \dot{x}_{k-1}$.
+\end{itemize}
+
+\subsection{Explicit Source Term}
+By applying the General Leibniz Rule and the multivariate chain rule, the source term $\mathcal{S}_k$ can be written explicitly. It sums over the explicit $u$-dependence ($j$) and the mixed dependencies on $\dot{x}$ and $x$:
+
+\begin{multline}
+    \mathcal{S}_k(t) = \\
+    \sum_{j=0}^k \binom{k}{j} \sum_{\substack{a+b \le k-j \\ (a,b,j) \neq (1,0,0) \\ (a,b,j) \neq (0,1,0)}} F_{a,b,j}(t) \cdot \mathcal{B}_{k-j, a, b}\left(\dot{x}, x\right)
+\end{multline}
+where $\mathcal{B}_{n, a, b}(\dot{x}, x)$ represents the multivariate Bell polynomial term corresponding to $a$ derivatives of $\dot{x}$ and $b$ derivatives of $x$. For practical implementation, this implies we sum over all combinations of derivatives excluding the linear $k$-th order terms.
+
+\subsection{The Linear Time-Varying (LTV) System}
+Rearranging the terms, we see that finding the $k$-th perturbation $x_k(t)$ reduces to solving a Linear Time-Varying (LTV) differential equation:
+
+\begin{equation}
+    \label{eq:formal_ode_solution}
+    \boxed{
+        F_{1,0,0}(t) \frac{d x_k}{dt} + F_{0,1,0}(t) x_k(t) = - \mathcal{S}_k(t)
+    }
+\end{equation}
+
+This result highlights a powerful property of perturbation theory:
+\begin{enumerate}
+    \item \textbf{Universality of the Operator:} The Left-Hand Side (LHS) of \eqref{eq:formal_ode_solution} depends \textit{only} on the zeroth-order solution $x_0(t)$. The differential operator is the same for $x_1, x_2, \dots, x_k$.
+    \item \textbf{Iterative Structure:} The Right-Hand Side (RHS), $\mathcal{S}_k(t)$, depends exclusively on previous orders ($x_0, \dots, x_{k-1}$).
+\end{enumerate}
+Therefore, if one can construct the Green's function (or integrating factor) for the linearized equation around $x_0$, the solution for any higher order $x_k$ is obtained simply by integrating that Green's function against the known source term $\mathcal{S}_k$.

@@ -1,0 +1,56 @@
+% content/backcover.tex
+\cleardoublepage
+\newgeometry{margin=1in} 
+\thispagestyle{empty}
+\pagecolor{notegray}
+
+\vspace*{\fill}
+
+\begin{center}
+    % --- The Hook ---
+    {\Large\scshape\color{techblue} \booktitle}
+    
+    \vspace{2em}
+    
+    % --- The Blurb ---
+    \begin{minipage}{0.8\textwidth}
+        \large\itshape\color{black!80}
+        \centering
+        \bookblurb % <--- Variable used here
+    \end{minipage}
+
+    \vspace{3em}
+
+    % --- The "Warning" Box ---
+    \begin{tcolorbox}[
+        colback=techblue, 
+        colframe=techblue, 
+        coltext=white, 
+        width=0.9\textwidth,
+        arc=0mm, 
+        boxrule=0pt,
+        halign=center
+    ]
+        \textbf{WARNING:} \bookwarning % <--- Variable used here
+    \end{tcolorbox}
+    
+    \vspace{3em}
+
+    % --- License & Logo ---
+    \nonsenseLogo
+    
+    \vspace{1em}
+    {\small\scshape \publisher}
+    
+    \vspace{2em}
+    
+    % Creative Commons Badge
+    \huge \ccbysa
+    \vspace{0.5em}
+    
+    {\normalsize\ttfamily \isbn}
+\end{center}
+
+\vspace*{\fill}
+\restoregeometry
+\pagecolor{white}
