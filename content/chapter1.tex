@@ -1,20 +1,58 @@
 \chapter{Differential Equations}
 
-\section{The 1D Schrödinger Equation as a non-linear forced system}
-\lettrine{T}{he 1D Schrödinger Equation}, can be written, by normalizing variables and rearranging terms, roughly as:
+\section{The 1D Schrödinger Equation as a Non-Linear System}
+
+\lettrine{T}{he 1D Schrödinger Equation} is typically celebrated for its linearity, a property that allows for the superposition of states.
+\begin{equation}
+    \label{eq:schrodinger-original}
+    -\frac{\hbar^2}{2m}\dv[2]{\psi}{x} + V(x) \psi = E \psi
+\end{equation}
+Rearranging this equation a bit, we get to a more stripped down version:
+\begin{eqnarray*}
+    -\frac{\hbar^2}{2m}\dv[2]{\psi}{x} + (V(x) - E) \psi &= 0 \\
+    \frac{\hbar^2}{2m}\dv[2]{\psi}{x} + (E - V(x)) \psi &= 0
+\end{eqnarray*}
+Finally, defining $u(x) = \frac{2m}{\hbar^2}(E - V(x))$, we get:
 \begin{equation}
     \label{eq:schrodinger}
     \dv[2]{\psi}{x} + u(x) \psi = 0
 \end{equation}
+which looks a bit like a harmonic oscillator with a "time-dependent frequency" $\sqrt{u(x)}$.
 
-We could make the ansatz $\psi(x) = \exp{h(x)}$ and note that:
-\begin{align*}
-    \dv{e^{h(x)}}{x} &= \dv{h}{x} \psi(x) \\
-    \dv[2]{e^{h(x)}}{x} &= \dv{x}\left(\dv{h}{x}\psi(x)\right) \\
-                        &= \dv[2]{h}{x}\psi(x) + \dv{h}{x}\dv{\psi(x)}{x} \\
-                        &= \left[\dv[2]{h}{x} + \left(\dv{h}{x}\right)^2\right]\psi(x)
-\end{align*}
-Putting this together with \eqref{eq:schrodinger} gives:
-\begin{equation*}
-    \dv[2]{h}{x} + \left(\dv{h}{x}\right)^2 = -u(x)
-\end{equation*}
+\subsection{The Exponential Ansatz}
+What happens if we force a non-linear perspective? Let us propose the ansatz:
+\begin{equation}
+    \psi(x) = \exp{h(x)}
+\end{equation}
+We now calculate the derivatives to substitute back into \eqref{eq:schrodinger}. The first derivative is straightforward by the chain rule:
+\begin{equation}
+    \dv{x} e^{h(x)} = h'(x) \psi(x)
+\end{equation}
+The second derivative requires the product rule. This is where the non-linearity emerges:
+\begin{align}
+    \dv[2]{x} e^{h(x)} & = \dv{x} \left( h'(x) \psi(x) \right) \nonumber                 \\
+                       & = h''(x) \psi(x) + h'(x) \dv{\psi(x)}{x} \nonumber              \\
+                       & = h''(x) \psi(x) + h'(x) \left( h'(x) \psi(x) \right) \nonumber \\
+                       & = \left[ h''(x) + \left( h'(x) \right)^2 \right] \psi(x)
+\end{align}
+
+\subsection{The Resulting Equation}
+Substituting this back into the original equation \eqref{eq:schrodinger}, we can factor out the wavefunction $\psi(x)$ (which is non-zero by definition of the exponential).
+
+\begin{result}{The Modified Riccati Form}{riccati_form}
+    The linear Schrödinger equation is equivalent to the following non-linear differential equation for the exponent $h(x)$:
+    \begin{equation}
+        \boxed{ h''(x) + \left( h'(x) \right)^2 = -u(x) }
+    \end{equation}
+\end{result}
+
+This turned our non-homogeneous linear "harmonic oscillator" into a homogeneous forced system, but with a non-linear term.
+
+\begin{curiosity}{The Riccati Connection}{ricatti_connection}
+    If we define a new variable $v(x) = h'(x)$ (the logarithmic derivative of the wavefunction), the equation above becomes:
+    \[
+        v'(x) + v(x)^2 + u(x) = 0
+    \]
+    This is the famous \textbf{Riccati Equation}. It shows a deep duality: a second-order linear ODE can always be reduced to a first-order non-linear ODE. We traded order for linearity.
+
+\end{curiosity}

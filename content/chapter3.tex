@@ -1,7 +1,10 @@
 \chapter{Perturbation Theory}
+
+\section{Introduction: The Art of Approximation}
+
 \lettrine{O}{ften} in Physics, exact analytical solutions to complex equations are the exception rather than the rule. Real-world systems rarely fit perfectly into the idealized models that we can solve with simple closed-form expressions. To tackle this, we focus on what happens to a system when ``small perturbations'' are made around a known standard behavior.
 
-These perturbations are usually controlled by a coupling parameter, denoted here as $u$. The philosophy is to treat the difficult problem not as an isolated challenge, but as a continuous deformation of an easier problem. When $u=0$, the system exists in an "unperturbed" state (such as a harmonic oscillator or a free particle) for which the solution $x_0$ is known exactly. As we slowly "turn on" the parameter $u$ (representing a more complex physical situation, like friction, non-linear interactions, coupling to external fields, etc), the solution $x(u)$ moves away from $x_0$.
+These perturbations are usually controlled by a coupling parameter, denoted here as $u$. The philosophy is to treat the difficult problem not as an isolated challenge, but as a continuous deformation of an easier problem. When $u=0$, the system exists in an "unperturbed" state (such as a harmonic oscillator or a free particle) for which the solution $x_0$ is known exactly. As we slowly "turn on" the parameter $u$ (representing a more complex physical situation, like friction, non-linear interactions, or coupling to external fields), the solution $x(u)$ moves away from $x_0$.
 
 The core assumption of perturbation theory is that this deviation is smooth. Rather than attempting to find the full function $x(u)$ all at once, we construct it distinct layer by layer: a first-order correction linear in $u$, a second-order correction quadratic in $u$, and so on. This approach powerfully transforms a potentially intractable non-linear problem into an infinite hierarchy of solvable linear problems.
 
@@ -9,7 +12,7 @@ The core assumption of perturbation theory is that this deviation is smooth. Rat
 \lettrine{C}{onsider} an implicit algebraic equation of the form $F(x, u) = 0$. Here, $x$ represents the unknown state variable, and $u$ is a scalar control parameter. Our goal is to find a solution $x(u)$ that satisfies:
 \begin{equation}
     \label{eq:algequation}
-    F(x(u), u) = 0    
+    F(x(u), u) = 0
 \end{equation}
 We assume that we already know the solution at $u=0$, denoted as $x_0$ (where $F(x_0, 0) = 0$), and that the function is smooth.
 
@@ -19,7 +22,7 @@ If the parameter $u$ is sufficiently small, we can approximate the solution $x(u
     \label{eq:x_power_series}
     x(u) = x_0 + x_1 u + x_2 \frac{u^2}{2!} + \ldots = \sum_{k=0}^{\infty} \frac{x_k}{k!} u^k
 \end{equation}
-Here, the coefficients $x_k$ represents the $k$-th derivative of the trajectory, $x_k = \frac{d^k x}{d u^k}\big|_{u=0}$. Our objective is to determine these unknown coefficients $x_k$ sequentially.
+Here, the coefficient $x_k$ represents the $k$-th derivative of the trajectory, $x_k = \frac{d^k x}{d u^k}\big|_{u=0}$. Our objective is to determine these unknown coefficients $x_k$ sequentially.
 
 Substituting \eqref{eq:x_power_series} into the governing equation \eqref{eq:algequation} results in a composite function of $u$. We can expand this composite function into its own power series:
 \begin{equation}
@@ -37,16 +40,9 @@ Since \eqref{eq:algequation} states that $F(x(u), u)$ must be zero for \textit{a
 \end{equation}
 
 \subsection{Derivatives via Faà di Bruno's Formula}
-To solve \eqref{eq:formal_f_equations}, we need an explicit formula for the coefficients $F_k$ in terms of our unknowns $x_k$. Calculating high-order derivatives of the composite function $F(x(u), u)$ requires the General Chain Rule.
+To solve \eqref{eq:formal_f_equations}, we need an explicit formula for the coefficients $F_k$ in terms of our unknowns $x_k$. Calculating high-order derivatives of the composite function $F(x(u), u)$ requires the General Chain Rule. This is exactly the problem we solved in Chapter 2 using trees and partitions.
 
-Using the \textbf{Bivariate Faà di Bruno's formula}, we can expand the total derivative. The formula accounts for the direct dependence on $u$ and the indirect dependence through $x(u)$:
-\begin{multline}
-    \label{eq:faa_di_bruno_dependent}
-    \dv[k]{u} F(x(u), u) = \\
-        \sum_{j=0}^k \binom{k}{j} 
-            \sum_{\pi \in \Pi_{k-j}} \underbrace{\eval{\pdv[j,|\pi|]{F(x, u)}{u,x}}_{x=x(u)}}_{\text{Partial derivs of F}} \cdot \underbrace{\prod_{B \in \pi} \dv[|B|]{x}{u}}_{\text{Derivs of } x(u)}
-\end{multline}
-Evaluating this at $u=0$, we can express $F_k$ using \textbf{Bell polynomials} ($B_{n,k}$), which compactly handle the combinatorial partitions $\pi$.
+Using the \textbf{Bivariate Faà di Bruno's formula}, we can expand the total derivative. The formula accounts for the direct dependence on $u$ and the indirect dependence through $x(u)$. Evaluating this at $u=0$, we can express $F_k$ using \textbf{Bell polynomials} ($B_{n,k}$), which compactly handle the combinatorial partitions $\pi$.
 
 Let us define the partial derivative terms as $F_{i,j} = \partial_x^i \partial_u^j F|_{u=0}$. The expansion becomes:
 \begin{equation}
@@ -57,10 +53,10 @@ In this sum:
 \begin{itemize}
     \item $j$ counts the derivatives taken directly with respect to $u$.
     \item $i$ counts the derivatives taken with respect to $x$.
-    \item $B_{n,k}$ are the partial Bell polynomials, depending on the unknowns $x_1, \ldots, x_{n-k+1}$.
+    \item $B_{n,k}$ are the partial Bell polynomials, depending on $x_1, \ldots, x_{n-k+1}$.
 \end{itemize}
 
-\subsection{Recursive Solution for $x_k$}
+\subsection{Recursive Solution for \texorpdfstring{$x_k$}{xk}}
 To find the unknown $x_k$, we inspect \eqref{eq:F_k_expansion} for the term containing the highest order unknown. The term $x_k$ only appears when we take exactly one derivative with respect to $x$ (so $i=1$) and zero derivatives directly on $u$ (so $j=0$).
 
 Isolating this specific term ($j=0, i=1$):
@@ -73,16 +69,14 @@ We can now separate $x_k$ from all other lower-order terms. The condition $F_k=0
 \end{equation}
 where $\mathcal{R}_k$ contains the remaining sums. Assuming the Jacobian $F_x(x_0, 0)$ is non-singular (invertible), we arrive at the recursive solution:
 
-\begin{equation}
-    \label{eq:formal_x_solution}
-    \boxed{
-    x_k = -\frac{1}{F_{x}(x_0, 0)} \sum_{\substack{j\in[0, k]\\i\in[0,k-j]\\(i,j)\ne(1,0)}} \binom{k}{j} F_{i,j} \cdot B_{k-j,i}(x_1, \ldots, x_{k-j-i+1})
-    }
-\end{equation}
+\begin{result}{The Perturbation Solution}{formal_x_solution}
+    \begin{equation}
+        \label{eq:formal_x_solution}
+        x_k = -\frac{1}{F_{x}(x_0, 0)} \sum_{\substack{j\in[0, k] \\ i\in[0,k-j] \\ (i,j)\ne(1,0)}} \binom{k}{j} F_{i,j} \cdot B_{k-j,i}(x_1, \ldots, x_{k-j-i+1})
+    \end{equation}
+\end{result}
+
 This formula allows us to calculate any order $x_k$ purely from the known partial derivatives of $F$ and the previously calculated coefficients $x_1, \dots, x_{k-1}$.
-
-
-
 
 \section{Perturbation Theory for Differential Equations}
 
@@ -141,16 +135,45 @@ where $\mathcal{B}_{n, a, b}(\dot{x}, x)$ represents the multivariate Bell polyn
 \subsection{The Linear Time-Varying (LTV) System}
 Rearranging the terms, we see that finding the $k$-th perturbation $x_k(t)$ reduces to solving a Linear Time-Varying (LTV) differential equation:
 
-\begin{equation}
-    \label{eq:formal_ode_solution}
-    \boxed{
+\begin{result}{The Perturbation Equation}{ltv_eqn}
+    \begin{equation}
+        \label{eq:ltv_eqn}
         F_{1,0,0}(t) \frac{d x_k}{dt} + F_{0,1,0}(t) x_k(t) = - \mathcal{S}_k(t)
-    }
-\end{equation}
+    \end{equation}
+\end{result}
 
 This result highlights a powerful property of perturbation theory:
 \begin{enumerate}
-    \item \textbf{Universality of the Operator:} The Left-Hand Side (LHS) of \eqref{eq:formal_ode_solution} depends \textit{only} on the zeroth-order solution $x_0(t)$. The differential operator is the same for $x_1, x_2, \dots, x_k$.
+    \item \textbf{Universality of the Operator:} The Left-Hand Side (LHS) of \eqref{eq:ltv_eqn} depends \textit{only} on the zeroth-order solution $x_0(t)$. The differential operator is the same for $x_1, x_2, \dots, x_k$.
     \item \textbf{Iterative Structure:} The Right-Hand Side (RHS), $\mathcal{S}_k(t)$, depends exclusively on previous orders ($x_0, \dots, x_{k-1}$).
 \end{enumerate}
+
+\begin{curiosity}{The Perturbation Loop}{perturbation_loop}
+    \centering
+    \begin{tikzpicture}[
+            node distance=1.5cm,
+            every node/.style={font=\small},
+            pstep/.style={rectangle, draw=black!60, thick, rounded corners, minimum width=2.5cm, align=center, fill=white},
+            source/.style={rectangle, draw=colorCuriosity, thick, dashed, rounded corners, minimum width=2.5cm, align=center, fill=colorCuriosity!5},
+            arrow/.style={->, >=stealth, thick, color=black!70}
+        ]
+
+        % Nodes
+        \node[pstep] (x0) {Zeroth Order\\$x_0(t)$};
+        \node[source, right=1cm of x0] (S1) {Source $\mathcal{S}_1$\\ (Depends on $x_0$)};
+        \node[pstep, right=1cm of S1] (x1) {1st Order\\$x_1(t)$};
+        \node[source, below=1.2cm of S1] (S2) {Source $\mathcal{S}_2$\\ (Depends on $x_0, x_1$)};
+        \node[pstep, right=1cm of S2] (x2) {2nd Order\\$x_2(t)$};
+
+        % Arrows
+        \draw[arrow] (x0) -- (S1);
+        \draw[arrow] (S1) -- node[above, font=\footnotesize] {LTV Solver} (x1);
+        \draw[arrow] (x0) |- (S2);
+        \draw[arrow] (x1) |- (S2);
+        \draw[arrow] (S2) -- node[above, font=\footnotesize] {LTV Solver} (x2);
+
+    \end{tikzpicture}
+    Each correction $x_k$ is fed into the source term $\mathcal{S}_{k+1}$ for the next iteration. The "LTV Solver" (the Green's function) remains unchanged throughout the entire process.
+\end{curiosity}
+
 Therefore, if one can construct the Green's function (or integrating factor) for the linearized equation around $x_0$, the solution for any higher order $x_k$ is obtained simply by integrating that Green's function against the known source term $\mathcal{S}_k$.
