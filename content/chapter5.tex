@@ -9,7 +9,38 @@ In quantum mechanics, operators $A$ and $B$ rarely commute. The difference betwe
 \end{curiosity}
 
 \section{The Baker-Campbell-Hausdorff Formula}
-% Content to be added in Task 2
+
+Given two operators (or matrices) $A$ and $B$, we seek $Z$ such that:
+\begin{equation}
+    e^{Z} = e^{A}e^{B}
+\end{equation}
+The Baker-Campbell-Hausdorff (BCH) formula expresses $Z$ as an infinite series of nested commutators:
+
+\begin{result}{Baker-Campbell-Hausdorff Formula}{bch_formula}
+    \begin{equation}
+        Z = A + B + \frac{1}{2}[A,B] + \frac{1}{12}\big([A,[A,B]] + [B,[B,A]]\big) - \frac{1}{24}[B,[A,[A,B]]] + \cdots
+    \end{equation}
+    where $[A,B] = AB - BA$ is the commutator.
+\end{result}
+
+\subsection{Derivation via the Adjoint Representation}
+
+Let $f(t) = \log(e^{tA}e^{B})$. Differentiating with respect to $t$:
+
+\begin{equation}
+    f'(t) = \frac{\operatorname{ad}_{tA}}{e^{\operatorname{ad}_{tA}} - 1}(A)
+\end{equation}
+where $\operatorname{ad}_X(Y) = [X,Y]$. Integrating from $t=0$ to $t=1$ yields the BCH series.
+
+\begin{definition}{The Adjoint Operator}{adjoint_operator}
+    For an operator $X$, define $\operatorname{ad}_X: Y \mapsto [X,Y]$. This linear operator acts on the space of operators.
+\end{definition}
+
+\subsection{First Few Terms Explicitly}
+
+\begin{curiosity}{Symmetry and Antisymmetry}{bch_symmetry}
+    The BCH series contains only odd powers of commutators when expressed in terms of $A$ and $B$ individually. The first even commutator appears at fourth order: $[B,[A,[A,B]]]$.
+\end{curiosity}
 
 \section{The Magnus Expansion}
 % Content to be added in Task 3
