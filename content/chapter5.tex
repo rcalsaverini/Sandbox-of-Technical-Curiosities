@@ -43,7 +43,40 @@ where $\operatorname{ad}_X(Y) = [X,Y]$. Integrating from $t=0$ to $t=1$ yields t
 \end{curiosity}
 
 \section{The Magnus Expansion}
-% Content to be added in Task 3
+
+Consider the linear differential equation with time-dependent operator:
+\begin{equation}
+    \label{eq:magnus_ode}
+    \dv{U}{t} = A(t)U(t), \quad U(0) = I
+\end{equation}
+Even when $A(t)$ doesn't commute with itself at different times, we can seek a solution of the form $U(t) = \exp(\Omega(t))$.
+
+\begin{theorem}{Magnus Expansion}{magnus_theorem}
+    The solution to \eqref{eq:magnus_ode} can be written as $U(t) = \exp(\Omega(t))$ where $\Omega(t)$ satisfies:
+    \begin{equation}
+        \dv{\Omega}{t} = \sum_{k=0}^\infty \frac{B_k}{k!} \operatorname{ad}_\Omega^k A(t)
+    \end{equation}
+    with $B_k$ being Bernoulli numbers. The series expansion for $\Omega(t)$ is:
+    \begin{align}
+        \Omega(t) &= \int_0^t A(t_1) \, dt_1
+                  + \frac{1}{2} \int_0^t dt_1 \int_0^{t_1} dt_2 \, [A(t_1), A(t_2)] \nonumber \\
+                  &+ \frac{1}{12} \int_0^t dt_1 \int_0^{t_1} dt_2 \int_0^{t_2} dt_3 \, \big( [A(t_1), [A(t_2), A(t_3)]] \nonumber \\
+                  &\quad + [A(t_3), [A(t_2), A(t_1)]] \big) + \cdots
+    \end{align}
+\end{theorem}
+
+\subsection{Derivation via Picard Iteration}
+
+Start with the integral form $U(t) = I + \int_0^t A(s)U(s) \, ds$ and assume $U = e^\Omega$. Differentiate $e^\Omega$ using the derivative formula for matrix exponentials:
+
+\begin{equation}
+    \dv{t} e^{\Omega(t)} = \int_0^1 e^{\alpha \Omega(t)} \Omega'(t) e^{(1-\alpha)\Omega(t)} \, d\alpha
+\end{equation}
+Equating with $A(t)e^{\Omega(t)}$ leads to an equation for $\Omega'(t)$ that can be solved recursively.
+
+\begin{curiosity}{Time-Ordered Exponential}{time_ordered}
+    The Magnus expansion provides an alternative to the Dyson series (time-ordered exponential). While Dyson's series is easier for perturbation theory, Magnus' form preserves unitarity exactly when $A(t)$ is skew-Hermitian—crucial for quantum mechanics.
+\end{curiosity}
 
 \section{Connections and Applications}
 % Content to be added in Task 4
