@@ -453,4 +453,150 @@ In numerical simulations of Hamiltonian systems, the Magnus expansion underlies 
 \end{reference}
 
 \section{Computational Aspects}
-% Content to be added in Task 5
+
+\subsection{Convergence Analysis and Radius of Convergence}
+
+Both the BCH and Magnus series are asymptotic expansions with finite radii of convergence. Understanding these radii is crucial for determining when truncation at a given order is reliable.
+
+\begin{theorem}{Convergence Radius for BCH}{bch_convergence}
+    The BCH series for $Z = \log(e^A e^B)$ converges absolutely when $\|A\| + \|B\| < \log 2 \approx 0.693$, where $\|\cdot\|$ is any consistent matrix norm (e.g., the operator norm or Frobenius norm).
+\end{theorem}
+
+For the Magnus expansion, the convergence depends on the integral of the operator norm:
+
+\begin{theorem}{Convergence Radius for Magnus Expansion}{magnus_convergence}
+    The Magnus series for $\Omega(t)$ in the solution to $\frac{dU}{dt} = A(t)U(t)$ converges absolutely when:
+    \begin{equation}
+        \int_0^t \|A(s)\|\,ds < \pi.
+    \end{equation}
+\end{theorem}
+
+The reason for the factor $\pi$ is related to the poles of the function $\frac{z}{e^z - 1}$ (whose residues give the Bernoulli numbers). This radius determines the maximum evolution time for which the series converges.
+
+\textbf{Practical implication:} For a system with $\|A(t)\| \leq M$ for all $t$, the series converges for times $t < \pi/M$. For small systems or short times, this is often satisfied. For longer times or larger couplings, one must either:
+\begin{enumerate}
+    \item Truncate the time interval and integrate piecewise
+    \item Use faster-converging integrators
+    \item Accept that truncated series provides an approximation
+\end{enumerate}
+
+\subsection{Truncation Error and Order-$N$ Approximations}
+
+When computing in practice, we truncate the series at some maximum weight $N$. The truncation error depends on the norm of the operators:
+
+\begin{theorem}{Truncation Error Bound}{truncation_error}
+    If $\Omega(t) = \sum_{n=1}^N \Omega^{(n)}(t) + R_N(t)$ where $R_N$ is the remainder, then for the Magnus series with $\|A(t)\| \leq M$:
+    \begin{equation}
+        \|R_N(t)\| \leq C_{N+1} M^{N+1} t^{N+1},
+    \end{equation}
+    where $C_{N+1}$ is a constant depending on the Bernoulli numbers. The dominant term of the error comes from commutators of weight $N+1$.
+\end{theorem}
+
+This bound shows that:
+- Smaller $M$ and $t$ improve convergence exponentially with $N$
+- For very small perturbations (small $M$), even low-order truncations can be accurate
+- The error grows polynomially in time but with increasingly steep coefficients for large $N$
+
+\subsection{Numerical Implementation: Suzuki-Trotter and Efficient Splitting}
+
+A standard approach to compute $U(t) = e^{A(t)}$ approximately is the Suzuki-Trotter decomposition. When $A = B_1 + B_2$, the first-order split is:
+\begin{equation}
+    e^{\tau A} \approx e^{\tau B_1}e^{\tau B_2} + O(\tau^2).
+\end{equation}
+
+The error is $O(\tau^2)$; to reduce it, use a symmetric (second-order) split:
+\begin{equation}
+    e^{\tau A} = e^{\tau B_1/2}e^{\tau B_2}e^{\tau B_1/2} + O(\tau^3).
+\end{equation}
+
+Higher-order splittings can be constructed by composition. The Magnus expansion explains \emph{why} these work: the symmetric form exploits the structure of the Magnus series to cancel lower-order error terms.
+
+\textbf{Example: Operator splitting for $A = B + C$:}
+\begin{enumerate}
+    \item Compute $e^{B\Delta t}$ (exact or to high precision if $B$ has special structure, e.g., diagonal)
+    \item Compute $e^{C\Delta t}$ (likewise)
+    \item For second order: compose as $e^{B\Delta t/2}e^{C\Delta t}e^{B\Delta t/2}$
+    \item For higher orders, use Yoshida-type coefficients to combine multiple such products
+\end{enumerate}
+
+\subsection{Symbolic Computation and the Hall Basis}
+
+Computing BCH and Magnus series symbolically requires generating linearly independent commutators systematically. The \emph{Hall basis} provides an efficient generating set.
+
+\begin{definition}{Hall Basis for Lie Algebras}{hall_basis}
+    For two generators $A$ and $B$, a Hall basis is an ordered sequence of commutators such that:
+    \begin{enumerate}
+        \item Weight 1: $A$, $B$
+        \item Weight 2: $[B, A]$ (the commutator in a specific order)
+        \item Weight 3: $[A, [A, B]]$, $[B, [B, A]]$, $[[B, A], A]$, etc.
+    \end{enumerate}
+    The ordering is chosen so that:
+    \begin{align}
+        &\text{(i)} [X, Y] \text{ appears only if } X > Y \text{ in some total order} \\
+        &\text{(ii)} \text{Each element is a simple commutator } [X, Y] \\
+        &\text{(iii)} \text{The basis is closed under Lie bracket}
+    \end{align}
+\end{definition}
+
+For weight up to 3 with two generators:
+\begin{equation}
+    \text{Basis} = \{ A, B, [A,B], [A,[A,B]], [B,[B,A]] \}.
+\end{equation}
+
+The Hall basis avoids redundancy: any nested commutator can be reduced to a linear combination of Hall basis elements using the Jacobi identity and bilinearity.
+
+\textbf{Example: Computing the Fourth-Order Magnus Term.} At weight 4, the Hall basis elements are (after accounting for Jacobi relations):
+\begin{align}
+    [A, [A, [A, B]]], \quad &[B, [B, [B, A]]], \\
+    [A, [B, [B, A]]], \quad &[B, [A, [A, B]]], \\
+    &\vdots
+\end{align}
+Each contributes with a specific rational coefficient from the Magnus expansion coefficients (related to Bernoulli numbers). Symbolic systems like \texttt{Mathematica}, \texttt{Sage}, or specialized Lie algebra software automate this.
+
+\subsection{Numerical Example: Two-Level System Evolution}
+
+Consider a qubit with time-dependent Hamiltonian:
+\begin{equation}
+    H(t) = \frac{\hbar\Omega_0}{2}\sigma_z + \frac{\hbar\Omega(t)}{2}\sigma_x,
+\end{equation}
+where $\Omega(t) = \Omega_0 \sin(\omega t)$ is a modulated Rabi frequency. The Schrödinger equation is:
+\begin{equation}
+    \frac{dU}{dt} = -\frac{i}{\hbar}H(t)U(t).
+\end{equation}
+
+Setting $A(t) = -\frac{i}{\hbar}H(t)$:
+\begin{align}
+    A(t) &= -\frac{i\Omega_0}{2}\sigma_z - \frac{i\Omega_0\sin(\omega t)}{2}\sigma_x.
+\end{align}
+
+The first-order Magnus term is:
+\begin{equation}
+    \Omega^{(1)}(t) = \int_0^t A(t_1)\,dt_1 = -\frac{i\Omega_0 t}{2}\sigma_z + \frac{i\Omega_0}{2\omega}\big(1 - \cos(\omega t)\big)\sigma_x.
+\end{equation}
+
+The second-order term involves:
+\begin{equation}
+    [A(t_1), A(t_2)] = -\frac{\Omega_0^2\sin(\omega t_1)\sin(\omega t_2)}{4}[\sigma_z, \sigma_x] = \frac{i\Omega_0^2\sin(\omega t_1)\sin(\omega t_2)}{2}\sigma_y.
+\end{equation}
+
+Integrating:
+\begin{equation}
+    \Omega^{(2)}(t) = \frac{\Omega_0^2}{4\omega^2}\int_0^t dt_1 \int_0^{t_1} dt_2 \, \sin(\omega t_1)\sin(\omega t_2)\sigma_y.
+\end{equation}
+
+This can be evaluated in closed form (though tediously), yielding:
+\begin{equation}
+    \Omega^{(2)}(t) \propto \left(\frac{\Omega_0}{\omega}\right)^2 \cdot (\text{oscillating function of } \omega t)\sigma_y.
+\end{equation}
+
+The small parameter $\Omega_0/\omega$ (the ratio of Rabi frequency to modulation frequency) controls the convergence: for $\Omega_0 \ll \omega$, the first-order approximation is excellent. For comparable frequencies, higher orders become important.
+
+\begin{curiosity}{Why Computers Prefer Magnus over Time-Ordered Exponentials}{numerical_advantage}
+    The time-ordered exponential $\mathcal{T}\exp(\int A(t)\,dt)$ requires tracking which operators commute when order-by-order terms are included. For numerical integration, the Magnus expansion is preferable because:
+    \begin{enumerate}
+        \item Unitarity is automatic at each order (manifestly unitary)
+        \item Error analysis is cleaner (each truncation gives a bounded error)
+        \item Composition with other algorithms (splitting, spectral methods) is more transparent
+        \item Backward error analysis can be performed exactly
+    \end{enumerate}
+\end{curiosity}
