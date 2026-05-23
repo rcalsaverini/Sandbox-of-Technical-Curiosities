@@ -11,3 +11,12 @@ main.toc
 # Worktree directories for isolated development
 .worktrees/
 docs/superpowers/
+
+# VSCode
+.vscode
+
+# AI stuff
+
+GEMINI.md
+CLAUDE.md
+.claude

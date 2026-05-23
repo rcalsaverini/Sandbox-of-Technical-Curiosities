@@ -1,0 +1,13 @@
+[build]
+# Output directory for generated files
+# Empty string means same directory as source
+outdir = ""
+
+# Use LuaTeX (default, but explicit for clarity)
+engine = "LuaTeX"
+
+# Keep intermediate files for debugging if needed
+keep_intermediates = false
+
+# Enable bibliographic processing if needed (won't hurt if not)
+bibtex_enabled = true

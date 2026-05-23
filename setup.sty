@@ -36,6 +36,7 @@
 
 % --- Semantic Box Colors ---
 \definecolor{colorTheorem}{RGB}{140, 20, 20}   % Burgundy (Rigor)
+\definecolor{colorLemma}{RGB}{120, 30, 50}     % Dark Rose (Supporting Cast)
 \definecolor{colorDef}{RGB}{0, 90, 70}         % Forest Teal (Structure)
 \definecolor{colorResult}{RGB}{0, 50, 90}      % Tech Blue (Outcome)
 \definecolor{colorCuriosity}{RGB}{180, 100, 0} % Burnt Amber (The "Weird")
@@ -146,6 +147,16 @@
         }
 }
 
+% Theorem: Burgundy
+\tcbset{
+    styleLemma/.style={
+            commonbox,
+            colback=colorLemma!5,  % 5% opacity background
+            colframe=colorLemma,   % Solid frame
+            boxed title style={colback=colorLemma}
+        }
+}
+
 % Definition: Teal
 \tcbset{
     styleDef/.style={
@@ -187,6 +198,7 @@
 }
 % --- 3. Environment Definitions ---
 \newtcbtheorem[number within=chapter]{theorem}{Theorem}{styleTheorem}{th}
+\newtcbtheorem[number within=chapter]{lemma}{Lemma}{styleLemma}{lem}
 \newtcbtheorem[number within=chapter]{definition}{Definition}{styleDef}{def}
 \newtcbtheorem[number within=chapter]{result}{Result}{styleResult}{res}
 \newtcbtheorem[number within=chapter]{curiosity}{Curiosity}{styleCuriosity}{cur}
@@ -194,6 +206,7 @@
 
 % --- 4. Cleveref Names (Define these AFTER the boxes) ---
 \crefname{tcb@cnt@theorem}{Theorem}{Theorems}
+\crefname{tcb@cnt@lemma}{Lemma}{Lemmas}
 \crefname{tcb@cnt@definition}{Definition}{Definitions}
 \crefname{tcb@cnt@result}{Result}{Results}
 \crefname{tcb@cnt@curiosity}{Curiosity}{Curiosities}
